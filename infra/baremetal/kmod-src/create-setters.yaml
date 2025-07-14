@@ -1,0 +1,15 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: create-setters-fn-config
+  annotations:
+    config.kubernetes.io/local-config: "true"
+data:
+  kmod-name: kmodname
+  quay-dockerhub-secret: quay-dockerhub-secret
+  source-url: source-url
+  source-dir: source-dir
+  kernel-version: kernel-version
+  gcc-pkg: gcc-pkg
+  container-image: registry/username/repository:tag

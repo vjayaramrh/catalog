@@ -1,0 +1,34 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: kmodname-containerfile # kpt-set: ${kmod-name}-containerfile
+  namespace: kmm-operator-system
+data:
+  dockerfile: |
+    ARG BASE_IMAGE=ubuntu:latest
+    FROM ${BASE_IMAGE}
+    ARG KERNEL_VERSION
+    ARG SOURCE_URL
+    # The name of the folder created when the tarball is extracted.
+    ARG SOURCE_DIR
+    ARG MODULE_NAME
+    ARG GCC_PKG
+    RUN apt-get update && \
+        apt-get install -y --no-install-recommends \
+        build-essential \
+        linux-headers-${KERNEL_VERSION} \
+        kmod \
+        ${GCC_PKG} \
+        curl \
+        ca-certificates && \
+        update-ca-certificates && \
+        rm -rf /var/lib/apt/lists/*
+    WORKDIR /tmp/
+    RUN curl -L ${SOURCE_URL} -o module.tar.gz && \
+        tar -xvzf module.tar.gz -C /tmp && \
+        rm module.tar.gz
+    WORKDIR /tmp/${SOURCE_DIR}
+    RUN make
+    RUN mkdir -p /opt/lib/modules/${KERNEL_VERSION}/kernel/net/
+    RUN cp ${MODULE_NAME}.ko /opt/lib/modules/${KERNEL_VERSION}/kernel/net/${MODULE_NAME}.ko
+    RUN depmod -b /opt ${KERNEL_VERSION}

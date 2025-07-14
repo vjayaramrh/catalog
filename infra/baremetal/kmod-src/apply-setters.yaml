@@ -1,0 +1,15 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: apply-setters-fn-config
+  annotations:
+    config.kubernetes.io/local-config: "true"
+data:
+  container-image: quay.io/vishwanathj/gtp5g:ubuntu-6.8.0-1032-gcp
+  gcc-pkg: gcc-13-x86-64-linux-gnu
+  kernel-version: 6.8.0-1032-gcp
+  kmod-name: gtp5g
+  quay-dockerhub-secret: my-quay-secret
+  source-dir: gtp5g-0.8.8
+  source-url: https://github.com/free5gc/gtp5g/archive/refs/tags/v0.8.8.tar.gz
